@@ -14,9 +14,9 @@ Adafruit_VL53L0X lox = Adafruit_VL53L0X();
 Adafruit_NeoPixel strip = Adafruit_NeoPixel(N_LEDS, PIN, NEO_GRB + NEO_KHZ800);
 
 int LEdA[] = {6, 7, 8, 9, 10, 11, 12, 62, 61, 60, 59, 58, 57, 56, 55, 54, 53, 52, 51}; //19  
-int LEdB[] = {21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35}; //15 
-int LEdC[] = {14, 15, 16, 17, 18, 19, 20, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48}; //19 
-int LEdD[] = {0, 1, 2, 3, 4, 5, 64, 65, 66, 67, 68, 69, 70, 71}; //14 
+int LEdB[] = {21, 22, 23, 24, 25, 26, 27, 35, 34, 33, 32, 31, 30, 29, 28}; //15 
+int LEdC[] = {14, 15, 16, 17, 18, 19, 20, 48, 47, 46, 45, 44, 43, 42, 41, 40, 39, 38, 37}; //19 
+int LEdD[] = {0, 1, 2, 3, 4, 5, 71, 70, 69, 68, 67, 66, 65, 64}; //14 
 
 
 //long duration;
@@ -90,52 +90,72 @@ void brightenAll() {
   //delay(1500);
 }
 
-void brightenA() {
-  uint16_t j;
+void brighten(int middleA[], float middle, float aMax,int ledCount, int arraySize, float distance, int LEd[]) {
+    float steps = aMax/ledCount;
+  if (distance < middle + 0.8 && distance > middle - 0.8) {
+    for (uint16_t i = 0; i < arraySize; i++) { 
+      strip.setPixelColor(LEd[i], 255, 0, 255);
+    }
+  } else if (distance > middle) {
+    float stepCount = (distance - middle)/steps;
+    for (uint16_t i = 0; i < arraySize; i++) {
+      if (i <= middleA[0] && i >= middleA[0]-(stepCount/2)) {
+        strip.setPixelColor(LEd[i], 255, 0, 255);
+      } else if (i <= middleA[1] && i >= middleA[1] - stepCount) {
+        strip.setPixelColor(LEd[i], 255, 0 ,255);
+      } else {
+        strip.setPixelColor(LEd[i], 0, 0, 0);
+      }
+    }
+  } else if (distance < middle) {
+      float stepCount = (middle - distance)/steps;
+      for (uint16_t i = 0; i < arraySize; i++) {
+        if (i >= middleA[0] && i <= middleA[0]+(stepCount/2)) {
+          strip.setPixelColor(LEd[i], 255, 0, 255);
+        } else if (i >= middleA[1] && i <= middleA[1] + stepCount) {
+          strip.setPixelColor(LEd[i], 255, 0 ,255);
+        } else {
+          strip.setPixelColor(LEd[i], 0, 0, 0);
+        }
+      }
+  }
+  strip.show();  
+}
 
-  //for (j = 5; j < 255; j++) {
-    for (uint16_t i = 0; i < 19; i++) 
-      strip.setPixelColor(LEdA[i], 255, 0, 255);
-    strip.show();
-    //delay(10);
-  //}
-  //delay(1500);
+void brightenA() {
+  int middleA[] = {3, 14};
+  float middle = 13.36;
+  float aMax = 21.96;
+  int ledCount = 12;
+  int arraySize = 19;
+  brighten(middleA, middle, aMax, ledCount, arraySize, distance1, LEdA);
 }
 
 void brightenB() {
-  uint16_t j;
-
-  //for (j = 5; j < 255; j++) {
-    for (uint16_t i = 0; i < 15; i++) 
-      strip.setPixelColor(LEdB[i], 255, 0, 255);
-    strip.show();
-    //delay(10);
-  //}
-  //delay(1500);
+  int middleA[] = {2, 12};
+  float middle = 13.26;
+  float aMax = 22.49;
+  int ledCount = 8;
+  int arraySize = 15;
+  brighten(middleA, middle, aMax, ledCount, arraySize, distance2, LEdB);
 }
 
 void brightenC() {
-  uint16_t j;
-
-  //for (j = 5; j < 255; j++) {
-    for (uint16_t i = 0; i < 19; i++) 
-      strip.setPixelColor(LEdC[i], 255, 0, 255);
-    strip.show();
-    //delay(10);
-  //}
-  //delay(1500);
+  int middleA[] = {3, 13};
+  float middle = 13.28;
+  float aMax = 23.53;
+  int ledCount = 12;
+  int arraySize = 19;
+  brighten(middleA, middle, aMax, ledCount, arraySize, distance3, LEdC);
 }
 
 void brightenD() {
-  uint16_t j;
-
-  //for (j = 5; j < 255; j++) {
-    for (uint16_t i = 0; i < 14; i++) 
-      strip.setPixelColor(LEdD[i], 255, 0, 255);
-    strip.show();
-    //delay(10);
-  //}
-  //delay(1500);
+  int middleA[] = {2, 9};
+  float middle = 13.68;
+  float aMax = 23.43;
+  int ledCount = 8;
+  int arraySize = 14;
+  brighten(middleA, middle, aMax, ledCount, arraySize, distance4, LEdD);
 }
 
 // 255 to 0
